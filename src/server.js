@@ -1,40 +1,29 @@
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
-import 'dotenv/config';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT ?? 3000;
 
 app.use(express.json());
 app.use(cors());
-app.use(
-  pino({
-    level: 'info',
-    transport: {
-      target: 'pino-pretty',
-      options: {
-        colorize: true,
-        translateTime: 'yyyy-mm-dd HH:MM:ss',
-        ignore: 'pid,hostname',
-        messageFormat:
-          '{req.method} {req.url} {res.statusCode} - {responseTime}ms',
-        hideobject: true,
-      },
-    },
-  }),
-);
+app.use(pino());
 
 app.get('/notes', (req, res) => {
   res.status(200).json({ message: 'Retrieved all notes' });
 });
 
 app.get('/notes/:noteId', (req, res) => {
-  const id_param = req.params.noteId;
-  res.status(200).json({ message: `Retrieved note with ID: ${id_param}` });
+  const { noteId } = req.params;
+  res.status(200).json({
+    message: `Retrieved note with ID: ${noteId}`,
+  });
 });
 
-app.get('/test-error', (req, res) => {
+app.get('/test-error', () => {
   throw new Error('Simulated server error');
 });
 
@@ -43,11 +32,7 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.error('Error:', err.message);
-  res.status(500).json({
-    message: 'Internal Server Error',
-    error: err.message,
-  });
+  res.status(500).json({ message: err.message });
 });
 
 app.listen(PORT, () => {
