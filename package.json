@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "Yelyzaveta Vecherovska <vecheli0306@gmail.com>",
+  "author": "Dmytro Grytsai",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.6",
